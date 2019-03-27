@@ -1,0 +1,8 @@
+1) Compile the "Caeser_thread.c" file by using the following command:
+gcc Caeser_thread.c -o Caeser_thread -lpthread
+
+2) Create a file named "Input" in the same folder as the compiled "Caeser_thread" file.
+3) Open the "Input" file and write any text you'd like to cypher.
+4) Open command prompt, go to the directory containing the "Caeser_thread.exe" and launch it using the following command:
+./Caeser_thread
+
