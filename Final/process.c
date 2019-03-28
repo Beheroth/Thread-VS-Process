@@ -1,4 +1,3 @@
-
 #include <unistd.h>
 #include <sys/types.h>
 #include <stdio.h>
@@ -10,8 +9,7 @@
 #include <time.h>
 
 #define MAXCHAR 460000
-#define PROC 100
-#define KEY 1
+#define PROC 100		//CHANGE ME
 
 clock_t before;
 clock_t after;

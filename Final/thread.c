@@ -7,8 +7,7 @@
 
 
 #define MAXCHAR 460000
-#define THREADS 100
-#define KEY 1
+#define THREADS 100		//CHANGE ME!
 
 typedef struct thread_info {		/* Used as argument to doSomething() */
     pthread_t 	id;			/* ID returned by pthread_create() */
