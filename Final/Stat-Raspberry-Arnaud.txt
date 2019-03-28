@@ -1,0 +1,18 @@
+pi@raspberrypi:~/Documents/OS/Final $ sudo inxi -Fxz
+System:    Host: rberrypi Kernel: 4.14.79-v7+ armv7l (32 bit gcc: 4.9.3) Desktop: LXDE (Openbox 3.6.1)
+           Distro: Raspbian GNU/Linux 9 (stretch)
+Machine:   No /sys/class/dmi; using dmidecode: no smbios data available. Old system?
+CPU:       Quad core ARMv7 rev 4 (v7l) (-MCP-) (ARM)bmips: 307 
+           clock speeds: max: 1200 MHz 1: 1200 MHz 2: 1200 MHz 3: 1200 MHz 4: 1200 MHz
+Graphics:  Card: Failed to Detect Video Card!
+           Display Server: X.org 1.19.2 driver: N/A tty size: 224x28 Advanced Data: N/A for root
+Audio:     Card bcm2835 ALSA driver: bcm2835_alsa Sound: ALSA v: k4.14.79-v7+
+Network:   Card: Standard Microsystems SMSC9512/9514 Fast Ethernet Adapter usb-ID: 001-003
+           IF: N/A state: N/A speed: N/A duplex: N/A mac: N/A
+Drives:    HDD Total Size: NA (-)
+           ID-1: /dev/mmcblk0 model: N/A size: 31.1GB
+Partition: ID-1: / size: 29G used: 4.6G (17%) fs: ext4 dev: /dev/root
+           ID-2: /boot size: 44M used: 23M (51%) fs: vfat dev: /dev/mmcblk0p1
+Sensors:   None detected - is lm-sensors installed and configured?
+Info:      Processes: 127 Uptime: 3:00 Memory: 328.2/927.2MB Init: systemd runlevel: 5 Gcc sys: 6.3.0
+           Client: Shell (sudo) inxi: 2.3.5 
