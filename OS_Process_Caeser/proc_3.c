@@ -13,7 +13,6 @@
 #define PROC 6
 #define KEY 1
 
-
 pid_t pid;
 pid_t fork(void);
 pid_t wait(int* status);
@@ -45,7 +44,7 @@ char encrypt(int key, char ch)
 int main()
 {
 	//Create mytext variable
-	char mytext[MAXCHAR];	
+	char mytext[MAXCHAR];
 	strcpy(mytext, "");
 	
 	char output[MAXCHAR];
@@ -82,11 +81,9 @@ int main()
 	
 	//Calculate optimal load of the processus
 	int proc_load = count/PROC;
-	if(count%PROC != 0)
-	{
-		proc_load += 1;
-	}
-	printf("Char/processus = %d\n", proc_load);
+	int remainder = count%PROC;
+
+	printf("proc_load = %d\nremainder = %d\n", proc_load, remainder);
 
 	//Filling text_buffer
 	printf("\n--Filling text_buffer:\n");
@@ -106,6 +103,7 @@ int main()
 		printf("<%s>\n", text_buffer[buffer_index]);
 		buffer_index++;
     }
+    
 	// ------------------ SHM -----------------
 
 	// Initialization of the shared buffer
@@ -113,9 +111,9 @@ int main()
 	// Our memory segment is named "buff"
 	// Create the segment
 	// Create a str from the text
-	char **shm;
+	char *shm;
 	int shmid;
-	if((shmid = shmget(IPC_PRIVATE, sizeof(text_buffer), IPC_CREAT | 0666)) < 0 )
+	if((shmid = shmget(IPC_PRIVATE, sizeof(char)*MAXCHAR*PROC, IPC_CREAT | 0666)) < 0 )
 	{
 		perror("shmget");
 		exit(1);
@@ -123,30 +121,32 @@ int main()
 	printf("shmid: %d\n", shmid);
 	// Attach the segment to our data space
 	shm = shmat(shmid, NULL, 0);
-	if((int) shm  == -1)
+	if((char *) shm  == NULL)
 	{
 		perror("shmat error");
 		exit(1);
 	}
-
-	else printf("Attached\n");
-	
+	*shm = *mytext;
+	printf("Attached\n");
 	//printf("Contenu de la mémoire : %d\n", shmids);	
 	
-// ------------------ PROCESSUS ---------------------
+	// ------------------ PROCESSUS ---------------------
 	int fils = 0;
-	//int d = 0;
 	int b = 0;
-	
 	int flag = 0;
 	int status;
-	//int test = 0;
-	//int j = 0;
 	int q =0;
+	int start_index =0, length;
 
-	while(flag != PROC){
+	printf("--Creating processes\n");
+	while(b != PROC){
 		pid_t pid = fork();
-
+		length = proc_load;
+		if(b < remainder)
+		{
+			length = length + 1;
+		}
+		
 		if(pid == 0)
 		{
 			fils = 1;
@@ -156,21 +156,24 @@ int main()
 		else
 		{
 			//Prout.wav
+			printf("Parent: b: %d, start_index: %d, length: %d\n", b, start_index, length);
+			start_index = start_index + length;		
 		}
-		flag++;
 		b++;
 	}
 
 	if(fils == 1)
 	{
 		pid = getpid();
-		printf("Valeur incrémentation tableau: %d \nTraite: %s ",b, text_buffer[b]);
-		for(int i=0; i < strlen(text_buffer[b]);i++)
+		printf("Child: b: %d, start_index: %d, length: %d\n", b, start_index, length);
+		//printf("Valeur incrémentation tableau: %d \nTraite: %s ",b, text_buffer[b]);
+		for(int i=start_index; i < length + start_index;i++)
 		{
-			text_buffer[b][i] = encrypt(1, text_buffer[b][i]);
+			shm[i] = encrypt(1, mytext[i]);
 		}
-		printf("\nChild: Text_buffer[%d]:%s", b, text_buffer[b]);
-		memcpy(&shm + MAXCHAR*b, text_buffer[b], sizeof(text_buffer[b]));
+		printf("\nChild: Text_buffer[%d]:\n%s", b, mytext);
+		//memcpy(&shm + MAXCHAR*b, text_buffer[b], sizeof(text_buffer[b]));
+
 	}
 
 	else
@@ -180,18 +183,18 @@ int main()
 			int w = wait(&status);
 			q++;
 		}	
-		shmdt (shm);
-		shmctl(shmid,IPC_RMID,0);
 		printf("--Recomposition:\n");	
 		fflush(stdout);	
 		int l;
 		for(l=0; l<PROC; l++)
 		{	
-			int test = &shm;
-			printf("Parent: shm: %d\n", test);
-			//strcat(output, shm[l]);
-		}	
+			//int test = &shm;
+			//printf("Parent: shm: %d\n", test);
+		}
+		strcat(output, shm);
 		printf("OUTPUT:\n%s", output);
+		shmdt (shm);
+		shmctl(shmid,IPC_RMID,0);
 	}
 
 return 0;
