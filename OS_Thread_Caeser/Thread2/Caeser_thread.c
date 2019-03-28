@@ -4,15 +4,15 @@
 #include<stdlib.h>
 #include<unistd.h>
 
-#define MAXCHAR 32000
+#define MAXCHAR 460000
 #define THREADS 6
 #define KEY 1
 
 typedef struct thread_info {		/* Used as argument to doSomething() */
-    pthread_t 	id;	/* ID returned by pthread_create() */
-    int		num;	/* Application-defined thread # */
-    int		start_index;	/* Index from witch doSomething shall start from */
-    int		length;		/* Number of characters to cypher */
+    pthread_t 	id;			/* ID returned by pthread_create() */
+    int		num;			/* Application-defined thread # */
+    int		start_index;		/* Index from witch doSomething shall start from */
+    int		length;			/* Number of characters to cypher */
 };
 
 pthread_t tid[THREADS];
@@ -57,7 +57,7 @@ void* doSomeThing(void *arg)
     }
     //for(int i = 0; i < 0xFFFFFF; i++);	//add a time consumming task so one can see the concurrency
         
-    printf("Th#%lu done \n", tinfo->num);
+    printf("Th#%d done \n", tinfo->num);
     fflush(stdout);
     pthread_exit(NULL);
     return NULL;
@@ -73,7 +73,7 @@ int main(void)
     int err;
     FILE *fp;
     char str[MAXCHAR];
-    char* filename = "./Input";
+    char* filename = "../../Input";
 
     fp = fopen(filename, "r");
     if (fp == NULL) {
@@ -87,10 +87,10 @@ int main(void)
     {
 	strcat(montext, str);
 	int len = strlen(str);
-	printf("%d :%s \n", len, str);
+	//printf("%d :%s \n", len, str);
 	count = count + len;
     }
-    printf("Count is: %d \n", count);
+    //printf("Count is: %d \n", count);
     //printf("%s \n", montext);
     fclose(fp);
     
@@ -102,7 +102,7 @@ int main(void)
     {
 	thread_load += 1;
     }
-    printf("Char/thread: %d \n", (thread_load));
+    //printf("Char/thread: %d \n", (thread_load));
 
     
     //Creating Threads
